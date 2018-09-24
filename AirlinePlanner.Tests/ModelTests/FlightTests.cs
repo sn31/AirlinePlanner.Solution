@@ -28,31 +28,32 @@ namespace AirlinePlanner.Tests
         
         Assert.AreEqual(0, testFlight);
     }
-    // [TestMethod]
-    // public void GetAll_DbCompareObjects_Equal()
-    // {
-    //     //Arrange
-    //     List <Flight> cities = new List<Flight>{};
-    //     Flight newFlight = new Flight("Seattle");
-    //     newFlight.Save();
+    [TestMethod]
+    public void GetAll_DbCompareObjects_Equal()
+    {
+        //Arrange
+        List <Flight> allFlights = new List<Flight>{};
+        Flight newFlight = new Flight("South-West",Convert.ToDateTime("2019-01-01"),"On-Time");
+        newFlight.Save();
 
-    //     //Act
-    //     cities = Flight.GetAll();
+        //Act
+        allFlights = Flight.GetAll();
 
-    //     //Assert
-    //     Assert.AreEqual(newFlight, cities[0]);
+        //Assert
+        Assert.AreEqual(newFlight, allFlights[0]);
+    }
+    
+    [TestMethod]
+    public void Find_FindFlightDatabase_Flight()
+    {
+        DateTime newDate = new DateTime(2019, 01, 01);
+        Flight newFlight = new Flight("Seattle", newDate ,"On-Time");
+        newFlight.Save();
 
-    // }
-    // [TestMethod]
-    // public void Find_FindFlightDatabase_Flight()
-    // {
-    //     Flight newFlight = new Flight("Seattle");
-    //     newFlight.Save();
+        Flight testFlight = Flight.Find(newFlight.Id);
 
-    //     Flight testFlight = Flight.Find(newFlight.Id);
-
-    //     Assert.AreEqual(newFlight,testFlight);
-    // }
+        Assert.AreEqual(newFlight,testFlight);
+    }
 
     // [TestMethod]
     // public void Edit_UpdatesItemInDB()
