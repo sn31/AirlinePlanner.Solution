@@ -74,28 +74,60 @@ namespace AirlinePlanner.Models {
             MySqlCommand cmd = conn.CreateCommand ();
             cmd.CommandText = @"SELECT * FROM cities WHERE id=@thisId;";
 
-            cmd.Parameters.AddWithValue("@thisId", id);
+            cmd.Parameters.AddWithValue ("@thisId", id);
 
-            MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+            MySqlDataReader rdr = cmd.ExecuteReader () as MySqlDataReader;
 
             int cityId = 0;
             string cityName = "";
 
-            while(rdr.Read())
-            {
-                cityId = rdr.GetInt32(0);
-                cityName = rdr.GetString(1);
+            while (rdr.Read ()) {
+                cityId = rdr.GetInt32 (0);
+                cityName = rdr.GetString (1);
             }
 
-            City foundCity =  new City(cityName, cityId);
+            City foundCity = new City (cityName, cityId);
 
-            conn.Close();
-            if(conn != null)
-            {
-                conn.Dispose();
+            conn.Close ();
+            if (conn != null) {
+                conn.Dispose ();
             }
             return foundCity;
 
+        }
+
+        public void Edit (string newCity) {
+            MySqlConnection conn = DB.Connection ();
+            conn.Open ();
+            MySqlCommand cmd = conn.CreateCommand ();
+            cmd.CommandText = @"UPDATE cities SET name = @newCity WHERE id = @searchId;";
+
+            cmd.Parameters.AddWithValue ("@searchId", Id);
+            cmd.Parameters.AddWithValue ("@newCity", newCity);
+
+            this.Name = newCity;
+            cmd.ExecuteNonQuery ();
+
+            conn.Close ();
+            if (conn != null) {
+                conn.Dispose ();
+            }
+        }
+
+        public static void DeleteCity (int id) {
+            MySqlConnection conn = DB.Connection ();
+            conn.Open ();
+            MySqlCommand cmd = conn.CreateCommand ();
+            cmd.CommandText = @"DELETE FROM cities WHERE id = @searchId;";
+
+            cmd.Parameters.AddWithValue ("@searchId", id);
+
+            cmd.ExecuteNonQuery ();
+
+            conn.Close ();
+            if (conn != null) {
+                conn.Dispose ();
+            }
         }
 
         public static void DeleteAll () {

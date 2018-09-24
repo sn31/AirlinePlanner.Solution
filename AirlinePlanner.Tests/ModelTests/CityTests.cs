@@ -42,6 +42,40 @@ namespace AirlinePlanner.Tests
         Assert.AreEqual(newCity, cities[0]);
 
     }
+    [TestMethod]
+    public void Find_FindCityDatabase_City()
+    {
+        City newCity = new City("Seattle");
+        newCity.Save();
+
+        City testCity = City.Find(newCity.Id);
+
+        Assert.AreEqual(newCity,testCity);
+    }
+
+    [TestMethod]
+    public void Edit_UpdatesItemInDB()
+    {
+        City newCity = new City("Seattle");
+        newCity.Save();
+        string testCity = "San Jose";
+        newCity.Edit(testCity);
+
+        Assert.AreEqual(testCity, newCity.Name);
+    }
+
+    [TestMethod]
+    public void DeleteCity_DeleteCityFromDB()
+    {
+        City newCity = new City("Seatlle");
+        newCity.Save();
+
+        City.DeleteCity(newCity.Id);
+        int count = City.GetAll().Count;
+
+        Assert.AreEqual(0, count);
+    }
+
 
   }
 }
