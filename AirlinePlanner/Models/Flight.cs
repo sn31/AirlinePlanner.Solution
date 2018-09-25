@@ -45,17 +45,54 @@ namespace AirlinePlanner.Models
             MySqlConnection conn = DB.Connection();
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = @"INSERT INTO flights WHERE (name, departure_time, status) VALUES (@newName, @newDepartureTime,@newStatus);";
+            cmd.CommandText = @"INSERT INTO flights (name, departure_time, status) VALUES (@newName, @newDepartureTime,@newStatus);";
             cmd.Parameters.AddWithValue("@newName", this.Name);
             cmd.Parameters.AddWithValue("@newDepartureTime", this.DepartureTime);
             cmd.Parameters.AddWithValue("@newStatus", this.Status);
 
             cmd.ExecuteNonQuery();
+            Id = (int) cmd.LastInsertedId;
             conn.Close();
             if (conn != null)
             {
                 conn.Dispose();
             }
+        }
+
+        public static Flight Find(int id)
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+
+            MySqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = @"SELECT * FROM flights WHERE id=@thisId;";
+
+            cmd.Parameters.AddWithValue("@thisId", id);
+
+            MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+
+            int flightId = 0;
+            string flightName = "";
+            DateTime flightDateTime = new DateTime(1111, 11, 11);
+            string flightStatus = "";
+
+            while (rdr.Read())
+            {
+                flightId = rdr.GetInt32(0);
+                flightName = rdr.GetString(1);
+                flightDateTime = rdr.GetDateTime(2);
+                flightStatus = rdr.GetString(3);
+
+            }
+
+            Flight foundFlight = new Flight(flightName,flightDateTime, flightStatus, flightId);
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+            return foundFlight;
         }
         public static void DeleteAll()
         {
